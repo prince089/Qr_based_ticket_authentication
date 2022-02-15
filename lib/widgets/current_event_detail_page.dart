@@ -59,78 +59,16 @@ class CurrentDetailPage extends StatelessWidget {
               ),
             ),
           ),
-          Column(
-            children: [
-              SizedBox(height: screenHeight * 0.3),
-              Container(
-                // height : double.infinity,
-                // decoration: BoxDecoration(),
-                child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
-                  child: Column(
-                    children: [
-                      Text(
-                        head,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 30,
-                          fontWeight: FontWeight.bold,
-                          letterSpacing: 2,
-                        ),
-                      ),
-                      Text(
-                        location,
-                        style: TextStyle(
-                          color: Colors.grey[300],
-                          fontSize: 15,
-                          // fontWeight: FontWeight.bold,
-                          letterSpacing: 2,
-                        ),
-                      ),
-                      Text(
-                        DateFormat.MMM().format(date),
-                        style: TextStyle(
-                          color: Colors.grey[300],
-                          fontSize: 15,
-                          // fontWeight: FontWeight.bold,
-                          letterSpacing: 2,
-                        ),
-                      ),
-                      Text(
-                        DateFormat.d().format(date),
-                        style: TextStyle(
-                          color: Colors.grey[300],
-                          fontSize: 15,
-                          // fontWeight: FontWeight.bold,
-                          letterSpacing: 2,
-                        ),
-                      ),
-                      Text(
-                        prizedefine(prize) ? "Free" : prize.toString(),
-                        style: TextStyle(
-                          color: Colors.grey[300],
-                          fontSize: 15,
-                          // fontWeight: FontWeight.bold,
-                          letterSpacing: 2,
-                        ),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.people),
-                          SizedBox(width: 5,),
-                          Text("${bookedpeople.toString()} / ${totalpeople.toString()}"),
-                          // SizedBox(width: 10,),
-                          // Text(totalpeople.toString()),
-                        ],
-                      ),
-                      Text(organization)
-                    ],
-                  ),
-                ),
-              ),
-            ],
+          // SizedBox(height: screenHeight * 0.3),
+          Positioned(
+            top: MediaQuery.of(context).size.height-50,
+            // top: 200,
+            child: Container(
+              height:300,
+              decoration: BoxDecoration(
+                color: Colors.amber,
+              )
+            ),
           ),
         ],
       ),
