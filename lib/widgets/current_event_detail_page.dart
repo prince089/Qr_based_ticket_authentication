@@ -39,38 +39,129 @@ class CurrentDetailPage extends StatelessWidget {
     // final event = Provider.of<Event>(context);
 
     return Scaffold(
-      appBar: AppBar(
-        // title: Text(head),
-        backgroundColor: Colors.green[400],
-      ),
-      body: Stack(
-        children: [
-          Align(
-            alignment: Alignment.topCenter,
-            child: ClipPath(
-              clipper: ImageClipper(),
-              child: Image.asset(
-                "assets/main/$bcimag",
-                fit: BoxFit.cover,
-                width: screenWidth,
-                color: Color(0x99000000),
-                colorBlendMode: BlendMode.darken,
-                height: screenHeight * 0.5,
+      appBar: null,
+      body: SingleChildScrollView(
+        physics: BouncingScrollPhysics(),
+        child: Container(
+          height: MediaQuery.of(context).size.height,
+          decoration: BoxDecoration(
+            color: Colors.grey[100],
+          ),
+          child: Stack(
+            children: [
+              Align(
+                alignment: Alignment.topCenter,
+                child: ClipPath(
+                  clipper: ImageClipper(),
+                  child: Image.asset(
+                    "assets/main/$bcimag",
+                    fit: BoxFit.cover,
+                    width: screenWidth,
+                    color: Color(0x99000000),
+                    colorBlendMode: BlendMode.darken,
+                    height: screenHeight * 0.5,
+                  ),
+                ),
               ),
-            ),
-          ),
-          // SizedBox(height: screenHeight * 0.3),
-          Positioned(
-            top: MediaQuery.of(context).size.height-50,
-            // top: 200,
-            child: Container(
-              height:300,
-              decoration: BoxDecoration(
-                color: Colors.amber,
+              // SizedBox(height: screenHeight * 0.3),
+              Padding(
+                padding: const EdgeInsets.only(top: 250, left: 30, right: 30,bottom: 20),
+                child: SingleChildScrollView(
+                  physics: BouncingScrollPhysics(),
+                  child: Container(
+                    height: 400,
+                    decoration: BoxDecoration(
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.3),
+                          blurRadius: 20,
+                          spreadRadius: 5,
+                        )
+                      ],
+                      borderRadius: BorderRadius.circular(20),
+                      color: Colors.white,
+                    ),
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            CircleAvatar(
+                              backgroundImage: AssetImage("assets/main/$bcimag"),
+                            )
+                          ],
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              head,
+                              style: TextStyle(
+                                fontSize: 20,
+                                letterSpacing: 2,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                location,
+                              ),
+                              Text(
+                                "${bookedpeople.toString()} / ${totalpeople.toString()}",
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "${DateFormat.d().format(date)} - ${DateFormat.MMM().format(date)}",
+                              ),
+                              Text("${DateFormat.Hm().format(date)}") 
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: 20,),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                organization,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               )
-            ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
