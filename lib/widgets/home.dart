@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:time_pass_1/widgets/current_event_detail_page.dart';
+import 'package:time_pass_1/module/db/config.dart';
+import 'package:time_pass_1/widgets/currentcard/current_event_detail_page.dart';
 import 'package:time_pass_1/widgets/home_current_card.dart';
 import 'package:time_pass_1/module/home_current_event_card_data.dart';
 
@@ -13,80 +14,101 @@ void main() {
 
 class Home extends StatelessWidget {
   Home({Key? key}) : super(key: key);
+  List _rowdata = [];
   // String img1 = "81660.jpg";
   // String img2 = "Flag-India.jpg";
-  final List<CurrentEventCardData> currenteventlist = [
-    CurrentEventCardData(
-      head: "Event 1",
-      date: DateTime.now(),
-      location: "Location 1",
-      bcimag: "81660.jpg",
-      prize: 0.0,
-      totalpeople: 50,
-      bookedpeople: 20,
-      organization: "charusat"
-    ),
-    CurrentEventCardData(
-      head: "Event 2",
-      date: DateTime.now(),
-      location: "Location 2",
-      bcimag: "Flag-India.jpg",
-      prize: 0.0,
-      totalpeople: 50,
-      bookedpeople: 50,
-      organization: "charusat"
-    ),
-    CurrentEventCardData(
-      head: "Event 3",
-      date: DateTime.now(),
-      location: "Location 3",
-      bcimag: "Flag-India.jpg",
-      prize: 0.0,
-      totalpeople: 50,
-      bookedpeople: 10,
-      organization: "MSU"
-    ),
-    CurrentEventCardData(
-      head: "Event 4",
-      date: DateTime.now(),
-      location: "Location 4",
-      bcimag: "81660.jpg",
-      prize: 0.0,
-      totalpeople: 50,
-      bookedpeople: 20,
-      organization: "ddu"
-    ),
-    CurrentEventCardData(
-      head: "Event 5",
-      date: DateTime.now(),
-      location: "Location 5",
-      bcimag: "Flag-India.jpg",
-      prize: 0.0,
-      totalpeople: 50,
-      bookedpeople: 35,
-      organization: "charusat"
-    ),
-    CurrentEventCardData(
-      head: "Event 6",
-      date: DateTime.now(),
-      location: "Location 6",
-      bcimag: "Flag-India.jpg",
-      prize: 0.0,
-      totalpeople: 50,
-      bookedpeople: 20,
-      organization: "viswa"
-    ),
-    CurrentEventCardData(
-      head: "Event 7",
-      date: DateTime.now(),
-      location: "Location 7",
-      bcimag: "Flag-India.jpg",
-      prize: 0.0,
-      totalpeople: 50,
-      bookedpeople: 49,
-      organization: "aryan"
-    ),
-  ];
+  // final List<CurrentEventCardData> currenteventlist = [
+  //   CurrentEventCardData(
+  //       head: "Event 1",
+  //       date: DateTime.now(),
+  //       location: "Location 1",
+  //       bcimag: "81660.jpg",
+  //       prize: 0.0,
+  //       totalpeople: 50,
+  //       bookedpeople: 20,
+  //       organization: "charusat"),
+  //   CurrentEventCardData(
+  //       head: "Event 2",
+  //       date: DateTime.now(),
+  //       location: "Location 2",
+  //       bcimag: "Flag-India.jpg",
+  //       prize: 0.0,
+  //       totalpeople: 50,
+  //       bookedpeople: 50,
+  //       organization: "charusat"),
+  //   CurrentEventCardData(
+  //       head: "Event 3",
+  //       date: DateTime.now(),
+  //       location: "Location 3",
+  //       bcimag: "Flag-India.jpg",
+  //       prize: 0.0,
+  //       totalpeople: 50,
+  //       bookedpeople: 10,
+  //       organization: "MSU"),
+  //   CurrentEventCardData(
+  //       head: "Event 4",
+  //       date: DateTime.now(),
+  //       location: "Location 4",
+  //       bcimag: "81660.jpg",
+  //       prize: 0.0,
+  //       totalpeople: 50,
+  //       bookedpeople: 20,
+  //       organization: "ddu"),
+  //   CurrentEventCardData(
+  //       head: "Event 5",
+  //       date: DateTime.now(),
+  //       location: "Location 5",
+  //       bcimag: "Flag-India.jpg",
+  //       prize: 0.0,
+  //       totalpeople: 50,
+  //       bookedpeople: 35,
+  //       organization: "charusat"),
+  //   CurrentEventCardData(
+  //       head: "Event 6",
+  //       date: DateTime.now(),
+  //       location: "Location 6",
+  //       bcimag: "Flag-India.jpg",
+  //       prize: 0.0,
+  //       totalpeople: 50,
+  //       bookedpeople: 20,
+  //       organization: "viswa"),
+  //   CurrentEventCardData(
+  //       head: "Event 7",
+  //       date: DateTime.now(),
+  //       location: "Location 7",
+  //       bcimag: "Flag-India.jpg",
+  //       prize: 0.0,
+  //       totalpeople: 50,
+  //       bookedpeople: 49,
+  //       organization: "aryan"),
+  // ];
+
+  Future _getdata() async {
+    
+    var db = Mysql();
+    await db.getconnection().then((value) {
+      String _fetchalldata = 'select * from eventform ';
+      value.query(_fetchalldata).then((data) {
+        for (var value in data) {
+          _rowdata.add(CurrentEventCardData(
+            head: value[1],
+            organization: value[2],
+            bookedpeople: 10,
+            prize: value[7].toString(),
+            totalpeople: value[10],
+            date: value[8],
+            location: value[14],
+            bcimag: value[9],
+          ));
+        }
+      },onError: (error){
+        print(error);
+      }).whenComplete((){
+        value.close();
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -139,7 +161,7 @@ class Home extends StatelessWidget {
               physics: BouncingScrollPhysics(),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: currenteventlist.map((crl) {
+                children: _rowdata.map((crl) {
                   return GestureDetector(
                       onTap: () {
                         Navigator.of(context).push(MaterialPageRoute(
@@ -148,7 +170,7 @@ class Home extends StatelessWidget {
                             location: crl.location,
                             date: crl.date,
                             bcimag: crl.bcimag,
-                            prize:crl.prize,
+                            prize: crl.prize,
                             bookedpeople: crl.bookedpeople,
                             totalpeople: crl.totalpeople,
                             organization: crl.organization,

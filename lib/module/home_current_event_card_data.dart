@@ -7,7 +7,7 @@ class CurrentEventCardData{
   final DateTime date;
   final String location;
   final String bcimag;
-  final double prize;
+  final String prize;
   final int totalpeople;
   final int bookedpeople;
   final String organization;
