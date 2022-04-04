@@ -29,7 +29,7 @@ class CurrentEventCard extends StatelessWidget {
                 image: DecorationImage(
                   colorFilter: ColorFilter.mode(
                       Colors.black.withOpacity(0.5), BlendMode.dstIn),
-                  image: AssetImage("assets/main/$bcimag"),
+                  image: NetworkImage('https://mpbca.000webhostapp.com/addon/event_form_images/IMG_0083.JPG'),
                   fit: BoxFit.fill,
                 ),
                 borderRadius: BorderRadius.circular(20),

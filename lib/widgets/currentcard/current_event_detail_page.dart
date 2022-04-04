@@ -1,20 +1,15 @@
-// import 'dart:html';
-// import 'dart:js';
-
-// import 'dart:js';
-
 import 'package:flutter/material.dart';
 // import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
 class CurrentDetailPage extends StatelessWidget {
-  final DateTime date;
+  final String date;
   final String head;
   final String location;
   final String bcimag;
-  final double prize;
-  final int totalpeople;
-  final int bookedpeople;
+  final String prize;
+  final String totalpeople;
+  final String bookedpeople;
   final String organization;
   const CurrentDetailPage({
     required this.head,
@@ -91,7 +86,7 @@ class CurrentDetailPage extends StatelessWidget {
                             height: 30,
                           ),
                           dataDate(),
-                          SizedBox(height : 20), 
+                          SizedBox(height: 20),
                           dataTime(),
                           SizedBox(
                             height: 20,
@@ -114,148 +109,180 @@ class CurrentDetailPage extends StatelessWidget {
   Center evOrgenization() => Center(child: Text("Orgenized by $organization"));
 
   Padding joinButton(BuildContext context) {
-    return Padding(padding: EdgeInsets.symmetric(horizontal: 30,vertical: 20),
-                          child: FractionallySizedBox(
-                            widthFactor: 1,
-                            child: ElevatedButton(
-                              onPressed: (){
-                                showModalBottomSheet(context: context, builder: (context){
-                                  return Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: SizedBox(
-                                      height: double.infinity, 
-                                    ),
-                                  );
-                                });
-                              },
-                              child: Text("Register",
-                                style: TextStyle(
-                                  fontWeight : FontWeight.bold,
-                                  letterSpacing: 1,
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 30, vertical: 20),
+      child: FractionallySizedBox(
+        widthFactor: 1,
+        child: ElevatedButton(
+          onPressed: () {
+            showModalBottomSheet(
+                context: context,
+                builder: (context) {
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: SizedBox(
+                        // height: 200,
+                        height: double.infinity,
+                        child: Column(
+                          children: [
+                            Container(
+                              height: 60,
+                              decoration: BoxDecoration(
+                                  border: Border.all(),
+                                  borderRadius: BorderRadius.circular(20)),
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: TextFormField(
+                                  // controller: ,
+                                  decoration: InputDecoration(
+                                    labelText: 'Id proof ',
+                                    border: InputBorder.none,
+                                  ),
                                 ),
                               ),
-                              
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            ElevatedButton(
+                              onPressed: () {},
+                              child: Text("Rock on !"),
                               style: ElevatedButton.styleFrom(
-                                primary: Color.fromRGBO(94, 194, 120, 1),
-                                onPrimary: Color.fromRGBO(234,237,217,1),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(32),
-                                )
+                                // backgroundColor: Color,
+                                primary: Colors.green[400],
                               ),
                             ),
-                          ),
-                        );
+                          ],
+                        )),
+                  );
+                });
+          },
+          child: Text(
+            "Register",
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              letterSpacing: 1,
+            ),
+          ),
+          style: ElevatedButton.styleFrom(
+              primary: Color.fromRGBO(94, 194, 120, 1),
+              onPrimary: Color.fromRGBO(234, 237, 217, 1),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(32),
+              )),
+        ),
+      ),
+    );
   }
 
   Padding dataVanue() {
     return Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 30),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "Vanue : ",
-                              ),
-                              Flexible(
-                                child: Text(location),
-                              )
-                            ],
-                          ),
-                        );
+      padding: const EdgeInsets.symmetric(horizontal: 30),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            "Vanue : ",
+          ),
+          Flexible(
+            child: Text(location),
+          )
+        ],
+      ),
+    );
   }
 
   Padding dataTime() {
     return Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 30),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "Time :",
-                              ),
-                              Text(DateFormat.Hm().format(date),)
-                            ],
-                          ),
-                        );
+      padding: const EdgeInsets.symmetric(horizontal: 30),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            "Time :",
+          ),
+          Text(date)
+        ],
+      ),
+    );
   }
 
   Padding dataDate() {
     return Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 30),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "Date : ",
-                              ),
-                              Text(
-                                  "${DateFormat.d().format(date)} - ${DateFormat.MMM().format(date)} - ${DateFormat.y().format(date)}")
-                            ],
-                          ),
-                        );
+      padding: const EdgeInsets.symmetric(horizontal: 30),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            "Date : ",
+          ),
+          Text(date)
+        ],
+      ),
+    );
   }
 
   Row evDescripion() {
     return Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Flexible(
-                              child: Text(
-                                location,
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontSize: 15,
-                                ),
-                              ),
-                            ),
-                          ],
-                        );
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Flexible(
+          child: Text(
+            location,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 15,
+            ),
+          ),
+        ),
+      ],
+    );
   }
 
   Row evhead() {
     return Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              head,
-                              style: TextStyle(
-                                fontSize: 30,
-                                letterSpacing: 2,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        );
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          head,
+          style: TextStyle(
+            fontSize: 30,
+            letterSpacing: 2,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ],
+    );
   }
 
   Row smallavatar() {
     return Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            CircleAvatar(
-                              backgroundImage:
-                                  AssetImage("assets/main/$bcimag"),
-                              radius: 30,
-                            )
-                          ],
-                        );
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        CircleAvatar(
+          backgroundImage: NetworkImage(
+              'https://mpbca.000webhostapp.com/addon/event_form_images/IMG_0083.JPG'),
+          radius: 30,
+        ),
+      ],
+    );
   }
 
   Align halfBackground(double screenWidth, double screenHeight) {
     return Align(
-              alignment: Alignment.topCenter,
-              child: ClipPath(
-                clipper: ImageClipper(),
-                child: Image.asset(
-                  "assets/main/$bcimag",
-                  fit: BoxFit.cover,
-                  width: screenWidth,
-                  color: Color(0x99000000),
-                  colorBlendMode: BlendMode.darken,
-                  height: screenHeight * 0.5,
-                ),
-              ),
-            );
+      alignment: Alignment.topCenter,
+      child: ClipPath(
+        clipper: ImageClipper(),
+        child: Image.network(
+          "https://mpbca.000webhostapp.com/addon/event_form_images/IMG_0083.JPG",
+          fit: BoxFit.cover,
+          width: screenWidth,
+          color: Color(0x99000000),
+          colorBlendMode: BlendMode.darken,
+          height: screenHeight * 0.5,
+        ),
+      ),
+    );
   }
 }
 

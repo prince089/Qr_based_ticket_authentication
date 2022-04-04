@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:time_pass_1/widgets/login.dart';
 //import 'widgets/otp_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -7,6 +8,8 @@ import 'package:flutter/material.dart';
 
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+   Firebase.initializeApp();
   runApp(
     MaterialApp(
       debugShowCheckedModeBanner: false,

@@ -10,6 +10,7 @@ class NewApp extends StatefulWidget {
 
 class _NewAppState extends State<NewApp> {
   Color _color = Colors.black;
+  TextEditingController mobilenumber = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -59,6 +60,7 @@ class _NewAppState extends State<NewApp> {
                       child: Container(
                         alignment: Alignment.center,
                         child: TextFormField(
+                          controller: mobilenumber,
                           onChanged: (newValue) {
                             if (newValue.length >= 10 || newValue.length == 0) {
                               // test for your condition
@@ -119,7 +121,7 @@ class _NewAppState extends State<NewApp> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => Home(),
+                          builder: (context) => OtpVarifacation(mobile: mobilenumber.text,),
                         ),
                       );
                     },

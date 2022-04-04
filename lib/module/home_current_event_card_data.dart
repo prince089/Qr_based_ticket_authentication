@@ -4,7 +4,7 @@
 
 class CurrentEventCardData{
   final String head;
-  final DateTime date;
+  final String date;
   final String location;
   final String bcimag;
   final String prize;

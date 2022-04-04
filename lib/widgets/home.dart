@@ -1,114 +1,54 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
-import 'package:time_pass_1/module/db/config.dart';
+// import 'package:time_pass_1/module/db/config.dart';
 import 'package:time_pass_1/widgets/currentcard/current_event_detail_page.dart';
 import 'package:time_pass_1/widgets/home_current_card.dart';
+// ignore: unused_import
 import 'package:time_pass_1/module/home_current_event_card_data.dart';
+import 'package:http/http.dart' as http;
 
-void main() {
-  runApp(
-    MaterialApp(
-      home: Home(),
-    ),
-  );
+
+// void main() {
+//   runApp(
+//     MaterialApp(
+//       home: Home(),
+//     ),
+//   );
+// }
+
+class Home extends StatefulWidget {
+  Home({Key? key}) : super(key: key);
+
+  @override
+  State<Home> createState() => _HomeState();
 }
 
-class Home extends StatelessWidget {
-  Home({Key? key}) : super(key: key);
-  List _rowdata = [];
+class _HomeState extends State<Home> {
   // String img1 = "81660.jpg";
-  // String img2 = "Flag-India.jpg";
-  // final List<CurrentEventCardData> currenteventlist = [
-  //   CurrentEventCardData(
-  //       head: "Event 1",
-  //       date: DateTime.now(),
-  //       location: "Location 1",
-  //       bcimag: "81660.jpg",
-  //       prize: 0.0,
-  //       totalpeople: 50,
-  //       bookedpeople: 20,
-  //       organization: "charusat"),
-  //   CurrentEventCardData(
-  //       head: "Event 2",
-  //       date: DateTime.now(),
-  //       location: "Location 2",
-  //       bcimag: "Flag-India.jpg",
-  //       prize: 0.0,
-  //       totalpeople: 50,
-  //       bookedpeople: 50,
-  //       organization: "charusat"),
-  //   CurrentEventCardData(
-  //       head: "Event 3",
-  //       date: DateTime.now(),
-  //       location: "Location 3",
-  //       bcimag: "Flag-India.jpg",
-  //       prize: 0.0,
-  //       totalpeople: 50,
-  //       bookedpeople: 10,
-  //       organization: "MSU"),
-  //   CurrentEventCardData(
-  //       head: "Event 4",
-  //       date: DateTime.now(),
-  //       location: "Location 4",
-  //       bcimag: "81660.jpg",
-  //       prize: 0.0,
-  //       totalpeople: 50,
-  //       bookedpeople: 20,
-  //       organization: "ddu"),
-  //   CurrentEventCardData(
-  //       head: "Event 5",
-  //       date: DateTime.now(),
-  //       location: "Location 5",
-  //       bcimag: "Flag-India.jpg",
-  //       prize: 0.0,
-  //       totalpeople: 50,
-  //       bookedpeople: 35,
-  //       organization: "charusat"),
-  //   CurrentEventCardData(
-  //       head: "Event 6",
-  //       date: DateTime.now(),
-  //       location: "Location 6",
-  //       bcimag: "Flag-India.jpg",
-  //       prize: 0.0,
-  //       totalpeople: 50,
-  //       bookedpeople: 20,
-  //       organization: "viswa"),
-  //   CurrentEventCardData(
-  //       head: "Event 7",
-  //       date: DateTime.now(),
-  //       location: "Location 7",
-  //       bcimag: "Flag-India.jpg",
-  //       prize: 0.0,
-  //       totalpeople: 50,
-  //       bookedpeople: 49,
-  //       organization: "aryan"),
-  // ];
+  List _rowdata =  [];
 
   Future _getdata() async {
-    
-    var db = Mysql();
-    await db.getconnection().then((value) {
-      String _fetchalldata = 'select * from eventform ';
-      value.query(_fetchalldata).then((data) {
-        for (var value in data) {
-          _rowdata.add(CurrentEventCardData(
-            head: value[1],
-            organization: value[2],
-            bookedpeople: 10,
-            prize: value[7].toString(),
-            totalpeople: value[10],
-            date: value[8],
-            location: value[14],
-            bcimag: value[9],
-          ));
-        }
-      },onError: (error){
-        print(error);
-      }).whenComplete((){
-        value.close();
+    var responce = await http.get(Uri.parse("https://mpbca.000webhostapp.com/applicationUser/currentCard.php"));
+    if(responce.statusCode == 200){
+      setState(() {
+        _rowdata = json.decode(responce.body) ;
       });
-    });
+      return _rowdata;
+    }
+    else{
+      print("error occur at connection");
+    }
   }
 
+@override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _getdata();
+  }
+  bool bcimgcheck = false;
+  // @override
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -159,29 +99,37 @@ class Home extends StatelessWidget {
           children: [
             SingleChildScrollView(
               physics: BouncingScrollPhysics(),
+
+
               child: Column(
+                
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: _rowdata.map((crl) {
                   return GestureDetector(
+                    // if (crl['image'] == null) {
+                    //    setstate((){
+                    //       bcimage = true;
+                    //     }) 
+                    // }
                       onTap: () {
                         Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) => CurrentDetailPage(
-                            head: crl.head,
-                            location: crl.location,
-                            date: crl.date,
-                            bcimag: crl.bcimag,
-                            prize: crl.prize,
-                            bookedpeople: crl.bookedpeople,
-                            totalpeople: crl.totalpeople,
-                            organization: crl.organization,
+                            head: crl['title'],
+                            location: crl['city'],
+                            date: crl['event_date'],
+                            bcimag:  'https://mpbca.000webhostapp.com/addon/event_form_images/IMG_0083.JPG',
+                            prize: crl['price_amount'] == null ?"FREE" : crl['price'],
+                            bookedpeople: crl['max_p'],
+                            totalpeople: crl['max_p'],
+                            organization: crl['organizer'],
                           ),
                         ));
                       },
                       child: CurrentEventCard(
-                        head: crl.head,
-                        location: crl.location,
-                        date: crl.date,
-                        bcimag: crl.bcimag,
+                        head: crl['title'],
+                        location: crl['city'],
+                        date: DateTime.now(),
+                        bcimag : 'https://mpbca.000webhostapp.com/addon/event_form_images/IMG_0083.JPG',  
                       ));
                 }).toList(),
               ),
