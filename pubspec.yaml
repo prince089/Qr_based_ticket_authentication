@@ -21,6 +21,7 @@ dependencies:
   firebase_auth: ^3.3.9 
   firebase_core: ^1.13.1
   shared_preferences: ^2.0.13
+  qr_flutter: ^4.0.0
 
 dev_dependencies:
   flutter_test:

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 // import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 
-class CurrentDetailPage extends StatelessWidget {
+class CurrentDetailPage extends StatefulWidget {
   final String date;
   final String head;
   final String location;
@@ -11,7 +12,7 @@ class CurrentDetailPage extends StatelessWidget {
   final String totalpeople;
   final String bookedpeople;
   final String organization;
-  const CurrentDetailPage({
+  CurrentDetailPage({
     required this.head,
     required this.date,
     required this.location,
@@ -21,6 +22,12 @@ class CurrentDetailPage extends StatelessWidget {
     required this.totalpeople,
     required this.organization,
   });
+
+  @override
+  State<CurrentDetailPage> createState() => _CurrentDetailPageState();
+}
+
+class _CurrentDetailPageState extends State<CurrentDetailPage> {
   bool prizedefine(double prize) {
     if (prize == 0.0) {
       return true;
@@ -29,10 +36,13 @@ class CurrentDetailPage extends StatelessWidget {
     }
   }
 
+  bool showqrcode = false;
+  TextEditingController idproof = TextEditingController();
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
+
     // final event = Provider.of<Event>(context);
 
     return Scaffold(
@@ -106,7 +116,8 @@ class CurrentDetailPage extends StatelessWidget {
     );
   }
 
-  Center evOrgenization() => Center(child: Text("Orgenized by $organization"));
+  Center evOrgenization() =>
+      Center(child: Text("Orgenized by ${widget.organization}"));
 
   Padding joinButton(BuildContext context) {
     return Padding(
@@ -121,39 +132,56 @@ class CurrentDetailPage extends StatelessWidget {
                   return Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: SizedBox(
-                        // height: 200,
-                        height: double.infinity,
-                        child: Column(
-                          children: [
-                            Container(
-                              height: 60,
-                              decoration: BoxDecoration(
-                                  border: Border.all(),
-                                  borderRadius: BorderRadius.circular(20)),
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: TextFormField(
-                                  // controller: ,
-                                  decoration: InputDecoration(
-                                    labelText: 'Id proof ',
-                                    border: InputBorder.none,
-                                  ),
+                      // height: 200,
+                      height: double.infinity,
+                      child: Column(
+                        children: [
+                          Container(
+                            height: 100,
+                            decoration: BoxDecoration(
+                                border: Border.all(),
+                                borderRadius: BorderRadius.circular(20)),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: TextFormField(
+                                controller: idproof,
+                                decoration: InputDecoration(
+                                  labelText: 'Id proof ',
+                                  border: InputBorder.none,
                                 ),
                               ),
                             ),
-                            SizedBox(
-                              height: 10,
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          ElevatedButton(
+                            onPressed: () {
+                              setState(() {
+                                showqrcode = true;
+                              });
+                            },
+                            child: Text("Rock on !"),
+                            style: ElevatedButton.styleFrom(
+                              // backgroundColor: Color,
+                              primary: Colors.green[400],
                             ),
-                            ElevatedButton(
-                              onPressed: () {},
-                              child: Text("Rock on !"),
-                              style: ElevatedButton.styleFrom(
-                                // backgroundColor: Color,
-                                primary: Colors.green[400],
-                              ),
-                            ),
-                          ],
-                        )),
+                          ),
+                          Container(
+                            child: showqrcode
+                                ? Container(
+                                    child: QrImage(
+                                      data: idproof.toString(),
+                                      version: QrVersions.auto,
+                                      size: 320,
+                                      gapless: false,
+                                    ),
+                                  )
+                                : Container(),
+                          )
+                        ],
+                      ),
+                    ),
                   );
                 });
           },
@@ -185,7 +213,7 @@ class CurrentDetailPage extends StatelessWidget {
             "Vanue : ",
           ),
           Flexible(
-            child: Text(location),
+            child: Text(widget.location),
           )
         ],
       ),
@@ -201,7 +229,7 @@ class CurrentDetailPage extends StatelessWidget {
           Text(
             "Time :",
           ),
-          Text(date)
+          Text(widget.date)
         ],
       ),
     );
@@ -216,7 +244,7 @@ class CurrentDetailPage extends StatelessWidget {
           Text(
             "Date : ",
           ),
-          Text(date)
+          Text(widget.date)
         ],
       ),
     );
@@ -228,7 +256,7 @@ class CurrentDetailPage extends StatelessWidget {
       children: [
         Flexible(
           child: Text(
-            location,
+            widget.location,
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 15,
@@ -244,7 +272,7 @@ class CurrentDetailPage extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
-          head,
+          widget.head,
           style: TextStyle(
             fontSize: 30,
             letterSpacing: 2,
