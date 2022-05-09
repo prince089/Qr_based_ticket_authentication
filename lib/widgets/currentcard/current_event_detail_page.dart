@@ -1,9 +1,22 @@
+// ignore_for_file: must_call_super
+
+import 'dart:convert';
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 // import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:time_pass_1/db.dart';
+import 'package:http/http.dart' as http;
+
+var number = "";
 
 class CurrentDetailPage extends StatefulWidget {
+  final String id;
   final String date;
   final String head;
   final String location;
@@ -12,16 +25,16 @@ class CurrentDetailPage extends StatefulWidget {
   final String totalpeople;
   final String bookedpeople;
   final String organization;
-  CurrentDetailPage({
-    required this.head,
-    required this.date,
-    required this.location,
-    required this.bcimag,
-    required this.prize,
-    required this.bookedpeople,
-    required this.totalpeople,
-    required this.organization,
-  });
+  CurrentDetailPage(
+      {required this.head,
+      required this.date,
+      required this.location,
+      required this.bcimag,
+      required this.prize,
+      required this.bookedpeople,
+      required this.totalpeople,
+      required this.organization,
+      required this.id});
 
   @override
   State<CurrentDetailPage> createState() => _CurrentDetailPageState();
@@ -37,7 +50,73 @@ class _CurrentDetailPageState extends State<CurrentDetailPage> {
   }
 
   bool showqrcode = false;
+  bool isnumberload = false;
   TextEditingController idproof = TextEditingController();
+  TextEditingController name = TextEditingController();
+  TextEditingController totalnumber = TextEditingController();
+  TextEditingController email = TextEditingController();
+  TextEditingController mobilenumber = TextEditingController();
+
+  // Future submitevent() async{
+  //   var db = Mysql2();
+  //   var conn = await db.getconnectiondb2();
+  //   var verifydoc = "${idproof.text}/${name.text}/${email.text}/${totalnumber.text}/${widget.id}";
+
+  //   var userquery = await conn.query("insert into userdetails (full_name ,phone_number , email ) values (?,?,?)",[name.text, mobilenumber.text,email.text]);
+  //   var inserid = userquery.insertId;
+  //   var verificdoc = await conn.query("insert into EventRegisterMaster(EventId ,UserId, VerifactiobDoc) values (?,?,?)",[widget.id,inserid,verifydoc]);
+
+  // conn.close();
+  // }
+  Future submitevent() async {
+    print(widget.id.runtimeType);
+
+    var verifydoc =
+        "${idproof.text}/${name.text}/${email.text}/${totalnumber.text}/${widget.id}";
+    var url = Uri.parse(
+        "https://mpbca.000webhostapp.com/applicationUser/regievent.php");
+    var responce = await http.post(url, body: {
+      "name": name.text,
+      "callnumber": mobilenumber.text,
+      "email": email.text,
+      "eventid": widget.id,
+      "userid": name.text,
+      "verfydoc": verifydoc
+    });
+
+    var data = json.decode(responce.body);
+
+    if (data == "1") {
+      setState(() {
+        showqrcode = true;
+      });
+      Fluttertoast.showToast(
+        msg: "Meet you there",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Color.fromARGB(255, 0, 236, 67),
+        textColor: Colors.white,
+        fontSize: 16.0,
+      );
+    } else {
+      Fluttertoast.showToast(
+        msg: "Omfo try later",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0,
+      );
+    }
+  }
+
+  @override
+  void initState() {
+    getnumber();
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
@@ -77,34 +156,47 @@ class _CurrentDetailPageState extends State<CurrentDetailPage> {
                       color: Colors.white,
                     ),
                     child: SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          SizedBox(
-                            height: 10,
-                          ),
-                          smallavatar(),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          evhead(),
-                          evOrgenization(),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          evDescripion(),
-                          SizedBox(
-                            height: 30,
-                          ),
-                          dataDate(),
-                          SizedBox(height: 20),
-                          dataTime(),
-                          SizedBox(
-                            height: 20,
-                          ),
-                          dataVanue(),
-                          joinButton(context),
-                        ],
-                      ),
+                      child: isnumberload
+                          ? Column(
+                              children: [
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                smallavatar(),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                evhead(),
+                                evOrgenization(),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                evDescripion(),
+                                SizedBox(
+                                  height: 30,
+                                ),
+                                dataDate(),
+                                SizedBox(height: 20),
+                                dataTime(),
+                                SizedBox(
+                                  height: 20,
+                                ),
+                                dataVanue(),
+                                //  TextFormField(
+                                //       controller: idproof,
+                                //       decoration: InputDecoration(
+                                //         labelText: 'Adhar card',
+                                //         border: InputBorder.none,
+                                //       ),
+                                //         keyboardType: TextInputType.number,
+                                //        inputFormatters: [FilteringTextInputFormatter.digitsOnly,
+                                //         LengthLimitingTextInputFormatter(12),],
+
+                                //     ),
+                                joinButton(context),
+                              ],
+                            )
+                          : Center(child: CircularProgressIndicator()),
                     ),
                   ),
                 ),
@@ -134,52 +226,89 @@ class _CurrentDetailPageState extends State<CurrentDetailPage> {
                     child: SizedBox(
                       // height: 200,
                       height: double.infinity,
-                      child: Column(
-                        children: [
-                          Container(
-                            height: 100,
-                            decoration: BoxDecoration(
-                                border: Border.all(),
-                                borderRadius: BorderRadius.circular(20)),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: TextFormField(
-                                controller: idproof,
-                                decoration: InputDecoration(
-                                  labelText: 'Id proof ',
-                                  border: InputBorder.none,
-                                ),
+                      child: SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            TextFormField(
+                              controller: name,
+                              decoration: InputDecoration(labelText: "Name"),
+                            ),
+                            TextFormField(
+                              controller: email,
+                              decoration: InputDecoration(labelText: "Email"),
+                            ),
+                            TextFormField(
+                              controller: idproof,
+                              keyboardType: TextInputType.number,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly,
+                                LengthLimitingTextInputFormatter(12),
+                              ],
+                              decoration: InputDecoration(
+                                  labelText: "Adharcard Number"),
+                            ),
+                            TextFormField(
+                              controller: mobilenumber,
+                              keyboardType: TextInputType.number,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly,
+                                LengthLimitingTextInputFormatter(10),
+                              ],
+                              decoration:
+                                  InputDecoration(labelText: "Mobile number "),
+                            ),
+                            // TextFormField(),
+                            TextFormField(
+                              keyboardType: TextInputType.number,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly
+                              ],
+                              controller: totalnumber,
+                              decoration: InputDecoration(
+                                  labelText: "How many are you"),
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                primary: Colors.green, // Background color
                               ),
+                              onPressed: () async {
+                                await submitevent();
+                                showModalBottomSheet(
+                                    context: context,
+                                    builder: (context) {
+                                      return Container(
+                                        child: showqrcode
+                                            ? Column(
+                                              children: [
+                                                Container(
+                                                    child: QrImage(
+                                                      data:
+                                                          "${idproof.text}/${name.text}/${email.text}/${totalnumber.text}/${widget.id}",
+                                                      version: QrVersions.auto,
+                                                      size: 200.0,
+                                                    ),
+                                                  ),
+                                                  Container(child: Text("Take screenshot of this qr code"),)
+                                              ],
+                                            )
+                                            : Container(
+                                                child: Text(
+                                                    "something goes wrong try again"),
+                                              ),
+                                      );
+                                    });
+                              },
+                              child: Text("Let's Rock on"),
                             ),
-                          ),
-                          SizedBox(
-                            height: 20,
-                          ),
-                          ElevatedButton(
-                            onPressed: () {
-                              setState(() {
-                                showqrcode = true;
-                              });
-                            },
-                            child: Text("Rock on !"),
-                            style: ElevatedButton.styleFrom(
-                              // backgroundColor: Color,
-                              primary: Colors.green[400],
+
+                            SizedBox(
+                              height: 20,
                             ),
-                          ),
-                          Container(
-                            child: showqrcode
-                                ? Container(
-                                    child: QrImage(
-                                      data: idproof.toString(),
-                                      version: QrVersions.auto,
-                                      size: 320,
-                                      gapless: false,
-                                    ),
-                                  )
-                                : Container(),
-                          )
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   );
@@ -311,6 +440,20 @@ class _CurrentDetailPageState extends State<CurrentDetailPage> {
         ),
       ),
     );
+  }
+
+  void getnumber() async {
+    final SharedPreferences _getperfdata =
+        await SharedPreferences.getInstance();
+    var savedPref = _getperfdata.getString("phonenumber");
+    // usercode = _getperfdata.getString("username");
+    setState(() {
+      number = savedPref.toString();
+      isnumberload = true;
+      // ihostelcode = savedPref.toString();
+      // ausercode = usercode;
+      // print(ihostelcode);
+    });
   }
 }
 

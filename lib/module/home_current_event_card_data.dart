@@ -3,6 +3,7 @@
 
 
 class CurrentEventCardData{
+  final String id ;
   final String head;
   final String date;
   final String location;
@@ -21,5 +22,6 @@ class CurrentEventCardData{
     required this.bookedpeople,
     required this.totalpeople,
     required this.organization,
+    required this.id
   });
 }

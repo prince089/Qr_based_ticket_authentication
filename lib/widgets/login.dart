@@ -121,9 +121,9 @@ class _NewAppState extends State<NewApp> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          // builder: (context) => OtpVarifacation(mobile: mobilenumber.text,),
+                          builder: (context) => OtpVarifacation(mobile: mobilenumber.text,),
 
-                           builder: (context) => Home(),
+                          //  builder: (context) => Home(),
                         ),
                       );
                     },

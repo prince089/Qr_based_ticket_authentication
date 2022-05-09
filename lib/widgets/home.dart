@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 // import 'package:time_pass_1/module/db/config.dart';
 import 'package:time_pass_1/widgets/currentcard/current_event_detail_page.dart';
 import 'package:time_pass_1/widgets/home_current_card.dart';
@@ -9,13 +10,6 @@ import 'package:time_pass_1/module/home_current_event_card_data.dart';
 import 'package:http/http.dart' as http;
 
 
-// void main() {
-//   runApp(
-//     MaterialApp(
-//       home: Home(),
-//     ),
-//   );
-// }
 
 class Home extends StatefulWidget {
   Home({Key? key}) : super(key: key);
@@ -27,6 +21,7 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   // String img1 = "81660.jpg";
   List _rowdata =  [];
+  bool is_data_loaded = false;
 
   Future _getdata() async {
     var responce = await http.get(Uri.parse("https://mpbca.000webhostapp.com/applicationUser/currentCard.php"));
@@ -37,7 +32,15 @@ class _HomeState extends State<Home> {
       return _rowdata;
     }
     else{
-      print("error occur at connection");
+          Fluttertoast.showToast(
+        msg: "network error occure",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0,
+      );
     }
   }
 
@@ -114,6 +117,7 @@ class _HomeState extends State<Home> {
                       onTap: () {
                         Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) => CurrentDetailPage(
+                            id: crl['event_ID'],
                             head: crl['title'],
                             location: crl['city'],
                             date: crl['event_date'],
@@ -137,14 +141,14 @@ class _HomeState extends State<Home> {
             Card(
               child: Container(
                 child: Column(
-                  children: [Text("hello2")],
+                  children: [Text("in process")],
                 ),
               ),
             ),
             Card(
               child: Container(
                 child: Column(
-                  children: [Text("hello3")],
+                  children: [Text("in process")],
                 ),
               ),
             ),
